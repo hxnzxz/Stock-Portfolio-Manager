@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
+    <link rel="stylesheet" href="styles.css" />
+
+    <title>Stock Manager</title>
+  </head>
+  <body>
+    <!-- ===================================================================================== -->
+    <!-- Display the current status of the database connection.
+     !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
+     -->
+    <h1>
+      Database Connection Status:
+      <!-- An in-line placeholder to display connection status. -->
+      <span id="dbStatus"> </span>
+      TEST
+      <!-- A loading GIF, will be hided once get the status. -->
+      <img
+        id="loadingGif"
+        class="loading-gif"
+        src="loading_100px.gif"
+        alt="Loading..."
+      />
+    </h1>
+
+    <hr />
+
+    <h2>Run SQL scripts</h2>
+    <button id="runSQLScripts">run scripts</button>
+    <br />
+
+    <hr />
+    <div class="custom-row">
+      <div class="custom-column">
+        <!--        <h2>View Tables and Relations</h2>-->
+        <!--        <label>Choose the current relation you would like to view</label>-->
+        <!--        <select id="selectedTable" onchange="fetchAndDisplayRelation()">-->
+        <!--          &lt;!&ndash;  <option>N/A</option>&ndash;&gt;-->
+        <!--          &lt;!&ndash;  <option value="demotable">Demotable</option>&ndash;&gt;-->
+        <!--          <option value="LocationAndCurrency">LocationAndCurrency</option>-->
+        <!--          <option value="StockExchangeLocation">Stock Exchange Location</option>-->
+        <!--          <option value="stockExchangeTable">Stock & Exchange</option>-->
+        <!--        </select>-->
+        <!--        <table id="currentTable" border="1">-->
+        <!--          <thead id="currentTableHead">-->
+        <!--            <tr>-->
+        <!--              <th>Default Column</th>-->
+        <!--              <th>Default Column 2</th>-->
+        <!--            </tr>-->
+        <!--          </thead>-->
+        <!--          <tbody id="currentTableBody"></tbody>-->
+        <!--        </table>-->
+        <h2>Exchanges & Locations</h2>
+        <table id="StockExchangeLocation" border="1">
+          <thead>
+            <tr>
+              <!--Table head, need to be adjusted accordingly to align with your own.-->
+              <th>Exchange</th>
+              <th>Location</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- ========================================================================= -->
+
+      <div class="custom-column">
+        <h2>Locations & Currency</h2>
+        <table id="LocationAndCurrency" border="1">
+          <thead>
+            <tr>
+              <!--Table head, need to be adjusted accordingly to align with your own.-->
+              <th>CurrencyLocation</th>
+              <th>Currency</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="custom-column">
+        <h2>Stocks & Exchanges</h2>
+        <table id="stockExchangeTable" border="1">
+          <thead>
+            <tr>
+              <!--Table head, need to be adjusted accordingly to align with your own.-->
+              <th>Ticker</th>
+              <th>Price</th>
+              <th>MarketCap</th>
+              <th>Shares</th>
+              <th>Volume</th>
+              <th>Exchange</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <!-- ========================================================================= -->
+
+    <!--<h2>Reset Demotable</h2>-->
+    <!--<p>-->
+    <!--  If you wish to reset the table press on the reset button. If this is the-->
+    <!--  first time you're running this page, you MUST use reset-->
+    <!--</p>-->
+    <!--<button id="resetDemotable">reset</button> <br />-->
+    <!--&lt;!&ndash; A placeholder to display messages related to the reset operation. &ndash;&gt;-->
+    <!--<div id="resetResultMsg"></div>-->
+
+    <!--<button id="resetStockExchangeTable">resetStockTable</button> <br />-->
+    <!--<div id="stockTableResetMsg"></div>-->
+
+    <!--<br />-->
+    <!--<hr />-->
+    <!--<br />-->
+    <!-- ========================================================================= -->
+    <br />
+    <hr />
+    <div class="custom-row">
+      <div class="custom-column">
+        <h2>Insert Stock into Exchange</h2>
+        <form id="insertStock">
+          Ticker:
+          <input
+            type="text"
+            id="insertTicker"
+            placeholder="Enter stock ticker"
+            required
+            minlength="5"
+            maxlength="5"
+            pattern=".{5,5}"
+          />
+          <br />
+          Price:
+          <input
+            type="number"
+            id="insertPrice"
+            placeholder="Enter stock price"
+            required
+          />
+          <br />
+          MarketCap:
+          <input
+            type="number"
+            id="insertMarketCap"
+            placeholder="Enter market cap"
+            required
+          />
+          <br />
+          Shares:
+          <input
+            type="number"
+            id="insertShares"
+            placeholder="Enter total number of shares"
+            required
+          />
+          <br />
+          Volume:
+          <input
+            type="number"
+            id="insertVolume"
+            placeholder="Enter stock volume"
+            required
+          />
+          <br />
+          ExchangeName:
+          <input
+            type="text"
+            id="insertExchange"
+            placeholder="Enter Exchange Name"
+            maxlength="20"
+            required
+          />
+          <br />
+
+          <button type="submit">insert</button> <br />
+        </form>
+        <div id="insertStockResultMsg"></div>
+      </div>
+      <div class="custom-column">
+        <h2>Delete Stock</h2>
+        <p>
+          The values are case sensitive and if you enter in the wrong case, the
+          delete statement will not do anything.
+        </p>
+        <form id="deleteStock">
+          Stock Ticker:
+          <input
+            type="text"
+            id="stockToDelete"
+            placeholder="Enter Stock Ticker"
+            required
+            minlength="5"
+            maxlength="5"
+            pattern=".{5,5}"
+          />
+
+          <button type="submit">delete</button> <br />
+        </form>
+
+        <div id="deleteStockMessage"></div>
+      </div>
+      <div class="custom-column">
+        <h2>Update Stock Exchange</h2>
+        <form id="updateStock">
+          <label>Ticker ID (PK):</label>
+          <input
+            type="text"
+            id="updateTickerID"
+            placeholder="Enter TickerID"
+            required
+            minlength="5"
+            maxlength="5"
+            pattern=".{5,5}"
+          />
+
+          <label>New Price:</label>
+          <input type="number" id="updatePrice" placeholder="Price" />
+
+          <label>New MarketCap:</label>
+          <input type="number" id="updateMarketCap" placeholder="MarketCap" />
+
+          <label>New Volume:</label>
+          <input type="number" id="updateVolume" placeholder="Volume" />
+
+          <label>New Shares:</label>
+          <input type="number" id="updateShares" placeholder="Shares" />
+
+          <label>New Exchange Name (FK):</label>
+          <input
+            type="text"
+            id="updateStockExchangeName"
+            placeholder="ExchangeName"
+          />
+          <button type="submit">Update</button>
+        </form>
+        <div id="updateStockMessage"></div>
+      </div>
+    </div>
+    <br />
+    <hr />
+    <div class="custom-row-2">
+      <div class="custom-column">
+        <h2>Projection on StockExchange</h2>
+        <p>Select columns to view:</p>
+        <form id="projectStockForm">
+          <div class="aligncheck">
+            <input type="checkbox" name="stockCols" value="TICKERID" />
+            Ticker ID
+          </div>
+          <div class="aligncheck">
+            <input type="checkbox" name="stockCols" value="PRICE" />
+            Price
+          </div>
+          <div class="aligncheck">
+            <input type="checkbox" name="stockCols" value="MARKETCAP" />
+            Market Cap
+          </div>
+          <div class="aligncheck">
+            <input type="checkbox" name="stockCols" value="SHARES" />
+            Shares
+          </div>
+          <div class="aligncheck">
+            <input type="checkbox" name="stockCols" value="VOLUME" />
+            Volume
+          </div>
+          <div class="aligncheck">
+            <input type="checkbox" name="stockCols" value="STOCKEXCHANGENAME" />
+            Exchange
+          </div>
+          <button type="submit">Project</button>
+        </form>
+        <div id="projectStockMsg"></div>
+        <table border="1">
+          <thead id="projectStockHead"></thead>
+          <tbody id="projectStockBody"></tbody>
+        </table>
+      </div>
+
+      <div class="custom-column">
+        <h2>Search STOCKEXCHANGE</h2>
+        <form id="selectStockForm">
+          <label>Attribute A:</label>
+          <select id="attrA">
+            <option value="PRICE">Price</option>
+            <option value="MARKETCAP">MarketCap</option>
+            <option value="VOLUME">Volume</option>
+          </select>
+
+          <label>Operator A:</label>
+          <select id="opA">
+            <option value="=">=</option>
+            <option value=">">&gt;</option>
+            <option value="<">&lt;</option>
+          </select>
+
+          <label>Value A:</label>
+          <input type="number" id="valA" placeholder="e.g. 1000" />
+
+          <br />
+
+          <label>Attribute B:</label>
+          <select id="attrB">
+            <option value="PRICE">Price</option>
+            <option value="MARKETCAP">MarketCap</option>
+            <option value="VOLUME">Volume</option>
+          </select>
+
+          <label>Operator B:</label>
+          <select id="opB">
+            <option value="=">=</option>
+            <option value=">">&gt;</option>
+            <option value="<">&lt;</option>
+          </select>
+
+          <label>Value B:</label>
+          <input type="number" id="valB" placeholder="e.g. 2000" />
+
+          <br />
+
+          <label>AND / OR:</label>
+          <select id="logicAB">
+            <option value="AND">AND</option>
+            <option value="OR">OR</option>
+          </select>
+
+          <br />
+          <button type="submit">Search</button>
+          <br />
+          <br />
+        </form>
+
+        <div id="selectResultMsg"></div>
+        <table id="stockExchangeSearch" border="1">
+          <thead>
+            <tr>
+              <!--Table head, need to be adjusted accordingly to align with your own.-->
+              <th>Ticker</th>
+              <th>Price</th>
+              <th>MarketCap</th>
+              <th>Shares</th>
+              <th>Volume</th>
+              <th>Exchange</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <br />
+    <br />
+    <br />
+
+    <!--<h2>Insert Values into DemoTable</h2>-->
+    <!--<form id="insertDemotable">-->
+    <!--  ID: <input type="number" id="insertId" placeholder="Enter ID" required />-->
+    <!--  <br /><br />-->
+    <!--  Name:-->
+    <!--  <input-->
+    <!--          type="text"-->
+    <!--          id="insertName"-->
+    <!--          placeholder="Enter Name"-->
+    <!--          maxlength="20"-->
+    <!--  />-->
+    <!--  <br /><br />-->
+
+    <!--  <button type="submit">insert</button> <br />-->
+    <!--</form>-->
+    <!--<div id="insertResultMsg"></div>-->
+
+    <br />
+    <hr />
+    <div class="custom-row">
+      <div class="custom-column">
+        <h2>Insert Tuple into LocationAndCurrency</h2>
+        <form id="insertLocationAndCurrency">
+          CurrencyLocation:
+          <input
+            type="text"
+            id="insertLocation"
+            placeholder="Enter Location"
+            required
+          />
+          <br /><br />
+          Currency:
+          <input
+            type="text"
+            id="insertCurrency"
+            placeholder="Enter Currency"
+            maxlength="20"
+          />
+          <br />
+
+          <button type="submit">insert</button> <br />
+        </form>
+        <div id="insertLocationAndCurrencyMsg"></div>
+      </div>
+
+      <div class="custom-column">
+        <h2>Delete LocationAndCurrency</h2>
+        <p>
+          The values are case sensitive and if you enter in the wrong case, the
+          delete statement will not do anything.
+        </p>
+        <form id="deleteLocationAndCurrency">
+          Location:
+          <input
+            type="text"
+            id="locationAndCurrencyToDelete"
+            placeholder="Enter Location"
+            required
+          />
+
+          <button type="submit">delete</button> <br />
+        </form>
+
+        <div id="deleteLocationAndCurrencyMessage"></div>
+      </div>
+
+      <!-- ========================================================================= -->
+
+      <!--<h2>Update Name in DemoTable</h2>-->
+      <!--<p>-->
+      <!--  The values are case sensitive and if you enter in the wrong case, the-->
+      <!--  update statement will not do anything.-->
+      <!--</p>-->
+      <!--<form id="updataNameDemotable">-->
+      <!--  Old Name:-->
+      <!--  <input-->
+      <!--          type="text"-->
+      <!--          id="updateOldName"-->
+      <!--          placeholder="Enter Old Name"-->
+      <!--          required-->
+      <!--  />-->
+      <!--  <br /><br />-->
+      <!--  New Name:-->
+
+      <!--  <input-->
+      <!--          type="text"-->
+      <!--          id="updateNewName"-->
+      <!--          placeholder="Enter New Name"-->
+      <!--          maxlength="20"-->
+      <!--  />-->
+      <!--  <br /><br />-->
+
+      <!--  <button type="submit">update</button> <br />-->
+      <!--</form>-->
+      <!--&lt;!&ndash; A placeholder to display messages related to the update operation. &ndash;&gt;-->
+      <!--<div id="updateNameResultMsg"></div>-->
+
+      <!--<br />-->
+      <!--<hr />-->
+      <!--<br />-->
+      <!-- ========================================================================= -->
+
+      <!--<h2>Count the Tuples in DemoTable</h2>-->
+      <!--<button id="countDemotable">count</button> <br /><br />-->
+      <!--&lt;!&ndash; A placeholder to display the count result. &ndash;&gt;-->
+      <!--<div id="countResultMsg"></div>-->
+
+      <!-- ===================================================================================== -->
+      <div class="custom-column">
+        <h2>Join Location-Currency and Location-StockExchange</h2>
+        <p>Find the Stock Exchanges and their Currency for a Location.</p>
+        <form id="joinLocationAndExchangeForm">
+          Location
+          <input
+            type="text"
+            id="joinLocationAndExchange"
+            placeholder="Enter Location"
+            required
+          />
+          <br />
+
+          <button type="submit">join</button> <br />
+          <br />
+        </form>
+        <!-- A placeholder to display messages related to the update operation. -->
+        <div id="joinLocationAndExchangeMessage"></div>
+        <table id="joinLocationAndExchangeTable" border="1">
+          <thead>
+            <tr>
+              <!--Table head, need to be adjusted accordingly to align with your own.-->
+              <th>Exchange</th>
+              <th>Location</th>
+              <th>Currency</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <br />
+    <hr />
+    <div class="custom-row-2">
+      <div class="custom-column">
+        <h2>Aggregation with Group By</h2>
+        <p>Finds the total marketcap value for each Stock Exchange</p>
+        <button id="groupByAggregation">Aggregate</button>
+        <br />
+        <br />
+        <table id="groupAggregatedTable" border="1">
+          <thead>
+            <tr>
+              <th>Stock Exchange</th>
+              <th>Total Market Cap</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="custom-column">
+        <h2>Aggregation with Having</h2>
+        <p>
+          Finds the total volume for each Stock Exchange with an average stock
+          price strictly greater than 15.
+        </p>
+        <button id="aggregationHaving">Aggregate</button>
+        <br />
+        <br />
+        <table id="aggregationHavingTable" border="1">
+          <thead>
+            <tr>
+              <th>Stock Exchange</th>
+              <th>Total Volume</th>
+              <th>Average Stock Price</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <br />
+    <hr />
+    <div class="custom-row-2">
+      <div class="custom-column">
+        <h2>Nested Aggregation with Group By</h2>
+        <p>
+          <!--      Finds the stock exchanges with the largest quantity of shares in our-->
+          <!--      database-->
+          Finds the Stock Exchanges where the average stock price is less than
+          or equal to the average price across all Stock Exchanges
+        </p>
+        <button id="nestedAggregation">Aggregate</button>
+        <br />
+        <br />
+        <table id="nestedAggregationTable" border="1">
+          <thead>
+            <tr>
+              <th>Stock Exchange</th>
+              <th>Average Price</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="custom-column">
+        <h2>Custom Division Query</h2>
+        <p>
+          Finds the only Stock Exchanges that have a ticker for all FANG
+          companies(Facebook, Amazon, Apple, Netflix, Google)
+        </p>
+        <button id="runDivision">Divide</button>
+        <br />
+        <br />
+        <div id="divideStockExchangeMessage"></div>
+        <table id="dividedTable" border="1">
+          <thead>
+            <tr>
+              <th>Stock Exchange Name</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
+    <script src="scripts.js"></script>
+  </body>
+</html>
